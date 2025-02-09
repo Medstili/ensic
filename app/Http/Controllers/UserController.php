@@ -16,7 +16,8 @@ class UserController extends Controller
     {
         
         $users = User::all();
-        return view('dashboard', compact('users'));       
+        $specialities = User::select('speciality')->distinct()->pluck('speciality');
+        return view('dashboard', compact('users','specialities'));       
     }
 
     /**
@@ -37,22 +38,22 @@ class UserController extends Controller
     // {
     public function store(Request $request) {
             $request->validate([
-                'fullname' => 'required',
+                'full_name' => 'required',
                 'email' => 'required|email',
                 'password' => 'required',
                 'tel' => 'required',
                 'specialist' => 'required',
-                'isAvailable' => 'required',
+                'is_available' => 'required',
                 'planning' => 'required|json',
             ]);
         
             $user = new User();
-            $user->full_name = $request->input('fullname');
+            $user->full_name = $request->input('full_name');
             $user->email = $request->input('email');
             $user->password = bcrypt($request->input('password'));
             $user->tel = $request->input('tel');
             $user->speciality = $request->input('specialist');
-            $user->is_available =  $request->input('isAvailable') == 'yes' ? 1:0;
+            $user->is_available = (int) $request->input('is_available');
             $user->planning =  $request->input('planning'); 
 
         
@@ -94,8 +95,9 @@ class UserController extends Controller
         
         // dd($id);
         $coach = User::find($id);
+        $specialities = User::select('speciality')->distinct()->pluck('speciality'); 
         
-        return view('coach_profile', compact('coach'));
+        return view('coach_profile', compact('coach','specialities'));
 
     }
 
@@ -119,15 +121,15 @@ class UserController extends Controller
         
         // dd($request->all());
         $user = User::find($id);
-        $user->full_name = $request->input('fullname');
+        $user->full_name = $request->input('full_name');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
-        $user->is_available = $request->input('isAvailable') == 'yes' ? 1:0;
+        $user->is_available = (int)$request->input('is_available');
         $user->speciality = $request->input('specialist');
         $user->tel = $request->input('tel');
         $user->planning = $request->input('planning');
         $user->save();
-       return redirect()->route('coach.show', $user->id);
+       return redirect()->route('user.show', $user->id);
     }
 
     /**
