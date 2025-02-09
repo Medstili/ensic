@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,7 +35,7 @@ class UserController extends Controller
      */
     // public function store(Request $request)
     // {
-        public function store(Request $request) {
+    public function store(Request $request) {
             $request->validate([
                 'fullname' => 'required',
                 'email' => 'required|email',
@@ -52,12 +53,13 @@ class UserController extends Controller
             $user->tel = $request->input('tel');
             $user->speciality = $request->input('specialist');
             $user->is_available =  $request->input('isAvailable') == 'yes' ? 1:0;
-            $user->planning = $request->input('planning'); 
+            $user->planning =  $request->input('planning'); 
+
         
             $user->save();
         
             return redirect()->route('user.index')->with('success', 'Coach added successfully!');
-        }
+    }
         
     //     // dd($request->all());
     //     $request->validate([
@@ -120,12 +122,12 @@ class UserController extends Controller
         $user->full_name = $request->input('fullname');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
-        $user->is_available = $request->input('isAvailable');
+        $user->is_available = $request->input('isAvailable') == 'yes' ? 1:0;
         $user->speciality = $request->input('specialist');
         $user->tel = $request->input('tel');
         $user->planning = $request->input('planning');
         $user->save();
-       return redirect()->route('coach.show', $user->id)->with('success', 'Coach updated successfully!');
+       return redirect()->route('coach.show', $user->id);
     }
 
     /**

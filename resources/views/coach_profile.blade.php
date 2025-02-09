@@ -6,102 +6,278 @@
     <title>User Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-6">
+<style>
+.coach-profile {
+  font-family: 'Segoe UI', sans-serif;
+  max-width: 1000px;
+  margin: 2rem auto;
+  background: #f9fbfd;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
 
-    <!-- Profile Card -->
-    <div class="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <!-- Profile Picture & Basic Info -->
-        <div class="flex items-center space-x-6">
-            <img id="profile-pic" src="https://i.pravatar.cc/150" class="w-24 h-24 rounded-full border-2 border-blue-500">
-            <div>
-                <h2 id="full-name" class="text-2xl font-bold text-gray-800"> {{$coach->full_name}}</h2>
-                <p class="text-gray-600"><i class="fas fa-envelope"></i> <span id="email">{{$coach->email}}</span></p>
-                <p class="text-gray-600"><i class="fas fa-phone"></i> <span id="phone">{{$coach->tel}}</span></p>
-                <span id="admin-badge" class="hidden bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">{{$coach->is_admin?'Admin':"Coach"}}</span>
-            </div>
-        </div>
+.coach-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #eee;
+}
 
-        <!-- Speciality & Availability -->
-        <div class="mt-4">
-            <h3 class="text-lg font-semibold text-gray-700"></h3>
-            <p id="speciality" class="text-gray-800">{{$coach->speciality}}</p>
-            <p class="mt-2">
-                <span class="font-semibold">Availability:</span>
-                <span id="availability" class="text-green-600 font-bold">{{$coach->is_available ?'avialable':'not available'}}</span>
-            </p>
-        </div>
+.coach-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3a86ff;
+}
 
-        <!-- Weekly Schedule -->
-        <div class="mt-4">
-            <h3 class="text-lg font-semibold text-gray-700">Schedule</h3>
+.coach-info h1 {
+  color: #1a237e;
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+.specialty {
+  color: #4a5568;
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+.badge-experience {
+  background: #3a86ff;
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.coach-meta p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.edit-btn {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.edit-btn:hover {
+  transform: translateY(-2px);
+}
+
+.appointments-table , .patients-table{
+  margin-top: 2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #3a86ff;
+  color: white;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
+
+.status-badge.passed {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-badge.upcoming {
+  background: #bee3f8;
+  color: #2a4365;
+}
+
+.status-badge.cancelled {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.details-btn, .report-btn {
+  background: #3a86ff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.details-btn:hover, .report-btn:hover {
+  transform: translateY(-2px);
+}
+
+.report-link {
+  color: #3a86ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.report-pending {
+  color: #a0aec0;
+  font-style: italic;
+}
+.table-switcher {
+  margin-top: 2rem;
+}
+.switch-btn {
+  background: #3a86ff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.switch-btn:hover {
+  background: #2a6ad4;
+}
+</style>
+<body class="coach-profile">
+  <!-- Coach Header -->
+  <div class="coach-header">
+    <img src="https://i.pravatar.cc/150" alt="Coach image profile" class="coach-avatar">
+    <div class="coach-info">
+      <h1>{{$coach->full_name}}</h1>
+      <p class="specialty">{{$coach->speciality}} Coach</p>      
+      <div class="coach-meta">
+        <p>📧 {{$coach->email}}</p>
+        <p>📱 {{$coach->tel}}</p>
+        <p> {{$coach->is_available == 1 ? 'Available' :'Not Available'}}</p>
+        <div class="schedule">
+            <h3>📅 Schedule:</h3>
             <ul id="schedule" class="list-disc pl-4 text-gray-800">
-                @php
-                    $schedule = json_decode($coach->planning, true);
-                @endphp
-                @if (is_array($schedule))
-                    @foreach ($schedule as $day => $time)
-                        <li><strong>{{ $day }}:</strong> {{ $time['startTime'] }} - {{ $time['endTime'] }}</li>
-                    @endforeach
-                @else
-                    <li>No schedule available.</li>
-                @endif
-            </ul>
-        </div>
-
-        <!-- Edit Profile Button -->
-        <div class="mt-6 text-center">
-        <form action="{{route('coach.edit',$coach->id)}}" method="get">
-            @csrf
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Edit Profile
-            </button>
-
-        </form>
+                    @php
+                        $schedule = json_decode($coach->planning, true);
+                    @endphp
+                    @if (is_array($schedule))
+                        @foreach ($schedule as $day => $time)
+                            <li><strong>{{ $day }}:</strong> {{ $time['startTime'] }} - {{ $time['endTime'] }}</li>
+                        @endforeach
+                    @else
+                        <li>No schedule available.</li>
+                    @endif
+                </ul>
           
         </div>
+      </div>
     </div>
+    <form action="{{ route('coach.edit', $coach->id) }}" method="GET">
+        @csrf
+        <button class="edit-btn">✏️ Edit</button>
+    </form>
+  </div>
 
-    <!-- <script>
-        // User Data (Simulated JSON)
-        // const user = {
-        //     full_name: "John Doe",
-        //     email: "johndoe@email.com",
-        //     phone: "0612345678",
-        //     speciality: "Fitness Trainer",
-        //     isAdmin: true, 
-        //     isAvailable: true,
-        //     week_planning: {
-        //         "Monday": "8:30 - 10:30",
-        //         "Wednesday": "14:00 - 16:00"
-        //     }
-        // };
+   <!-- Buttons for switching tables -->
+   <div class="table-switcher">
+    <button class="switch-btn" onclick="showTable('appointments')">Appointments</button>
+    <button class="switch-btn" onclick="showTable('patients')">Patients</button>
+  </div>
+  <!-- Appointments Table -->
+  <div class="appointments-table" id="appointments">
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Appointment Day</th>
+          <th>Status</th>
+          <th>Details</th>
+          <th>Session Report</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sarah Johnson</td>
+          <td>Mon, 15 July 2024 - 2:00 PM</td>
+          <td><span class="status-badge passed">Completed</span></td>
+          <td><button class="details-btn">View Details</button></td>
+          <td><a href="reports/sarah_johnson_150724.pdf" class="report-btn" download>📄 Download PDF</a></td>
+        </tr>
+        <tr>
+          <td>James Wilson</td>
+          <td>Tue, 16 July 2024 - 10:00 AM</td>
+          <td><span class="status-badge upcoming">Scheduled</span></td>
+          <td><button class="details-btn">View Details</button></td>
+          <td><span class="report-pending">Pending</span></td>
+        </tr>
+        <tr>
+          <td>Emma Roberts</td>
+          <td>Wed, 17 July 2024 - 4:30 PM</td>
+          <td><span class="status-badge cancelled">Cancelled</span></td>
+          <td><button class="details-btn">View Details</button></td>
+          <td><a href="#" class="report-link">View Notes</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-        // // Load User Data into the Profile
-        // document.getElementById("full-name").textContent = user.full_name;
-        // document.getElementById("email").textContent = user.email;
-        // document.getElementById("phone").textContent = user.phone;
-        // document.getElementById("speciality").textContent = user.speciality;
-        // document.getElementById("availability").textContent = user.isAvailable ? "Available" : "Not Available";
-        // document.getElementById("availability").classList.add(user.isAvailable ? "text-green-600" : "text-red-600");
-
-        // Show Admin Badge if User is Admin
-        // if (user.isAdmin) {
-        //     document.getElementById("admin-badge").classList.remove("hidden");
-        // }
-
-        // Load Weekly Schedule
-        // const scheduleList = document.getElementById("schedule");
-        // for (const [day, time] of Object.entries(user.week_planning)) {
-        //     const listItem = document.createElement("li");
-        //     listItem.innerHTML = `<strong>${day}:</strong> ${time}`;
-        //     scheduleList.appendChild(listItem);
-        // }
-
-        // Edit Profile Function (For Future Use)
-        // function editProfile() {
-        //     alert("Edit Profile Feature Coming Soon!");
-        // }
-    </script> -->
+  <div class="patients-table" id="patients" style="display:none;">
+  
+    <table>
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Phone</th>
+          <th>Reason for Visit</th>
+          <th>Treatment Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>John Doe</td>
+          <td>+1 (555) 678-9012</td>
+          <td>Stress Management</td>
+          <td>Ongoing</td>
+        </tr>
+        <tr>
+          <td>Jane Smith</td>
+          <td>+1 (555) 234-5678</td>
+          <td>Career Coaching</td>
+          <td>Completed</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 </body>
+
+<script>
+
+function showTable(tableId) {
+  document.getElementById('appointments').style.display = (tableId === 'appointments') ? 'block' : 'none';
+  document.getElementById('patients').style.display = (tableId === 'patients') ? 'block' : 'none';
+  console.log(tableId);
+  
+}
+</script>
 </html>
+
+
