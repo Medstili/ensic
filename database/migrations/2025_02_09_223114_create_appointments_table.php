@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
+    
+
     /**
      * Run the migrations.
      */
@@ -13,6 +16,14 @@ return new class extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
+            $table->string('client_full_name');
+            $table->string('client_tel');
+            $table->string('choosen_speciality'); 
+            $table->json('appointment_planning');
+            $table->string('status')->default('pending');
+            $table->foreignId('user_id')->constrained();
+            $table->string('canceler')->nullable(true);
+            $table->text('reason')->nullable(true);
             $table->timestamps();
         });
     }

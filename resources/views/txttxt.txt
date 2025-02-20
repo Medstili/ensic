@@ -1,0 +1,1801 @@
+///// app layout ////
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Healthcare Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url('/css/style.css') }}" /> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+ 
+</head>
+<body>
+    <!-- Holographic Sidebar -->
+    <div class="sidebar">
+        <div class="logo">HealthMetrics</div>
+        <form action="{{route('global')}}" method="get">
+        <button class="menu-item">📊 Dashboard</button>
+        </form>
+        <form action="{{route('appointment.index')}}" method="get">
+        <button class="menu-item">📅 Appointments</button>
+        </form>
+        <form action="{{route('user.index')}}" method="get">
+        <button class="menu-item">👨🏫 Coaches</button>
+        </form>
+        <form action="{{ route('patient.index') }}" method="get">
+        <button class="menu-item">👥 Patients</button>
+        </form>
+        
+    </div>
+
+    <!-- Top Navbar -->
+    <nav class="navbar">
+        <div class="profile">
+            <div class="profile-img">AP</div>
+            <div>
+                <h4>Admin Profile</h4>
+                <p>System Administrator</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+
+    <div class="main-content">
+
+    @yield('content')
+    
+    </div>
+
+    <script>
+        // Specialty Chart (Bar Chart)
+        new Chart(document.getElementById('specialtyChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Nutrition', 'Fitness', 'Mental', 'Rehab', 'Yoga'],
+                datasets: [{
+                    label: 'Appointments',
+                    data: [35, 28, 20, 12, 5],
+                    backgroundColor: [
+                        'rgba(99, 102, 241, 0.8)',
+                        'rgba(79, 70, 229, 0.8)',
+                        'rgba(165, 180, 252, 0.8)',
+                        'rgba(199, 210, 254, 0.8)',
+                        'rgba(224, 231, 255, 0.8)'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2,
+                    borderRadius: 12
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Status Chart (Doughnut)
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Pending', 'Canceled'],
+                datasets: [{
+                    data: [60, 25, 15],
+                    backgroundColor: [
+                        'rgba(99, 102, 241, 0.8)',
+                        'rgba(79, 70, 229, 0.8)',
+                        'rgba(165, 180, 252, 0.8)'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    </script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
+
+
+///////// global Dashboard ////////
+
+
+
+
+        <!-- Neon Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <p>Active Coaches</p>
+                <div class="stat-trend">↑ 12% from last month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">158</div>
+                <p>Registered Patients</p>
+                <div class="stat-trend">↑ 8% from last week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">56</div>
+                <p>Appointments</p>
+                <div class="stat-trend">↓ 3% cancellations</div>
+            </div>
+        </div>
+
+        <!-- global Appointments calendar -->
+
+
+        <!-- Interactive Charts -->
+        <div class="charts-container">
+            <div class="chart-box">
+                <div class="chart-header">
+                    <h3>Specialty Distribution</h3>
+                </div>
+                <canvas id="specialtyChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <div class="chart-header">
+                    <h3>Appointment Status</h3>
+                </div>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Holographic Table -->
+        <div class="appointment-table">
+            <h3>Recent Appointments</h3>
+            <table>
+                <tr>
+                    <th>Patient</th>
+                    <th>Coach</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>John Doe</td>
+                    <td>Dr. Smith</td>
+                    <td>2023-08-15</td>
+                    <td><span class="status-badge">Pending</span></td>
+                </tr>
+                <tr>
+                    <td>Sarah Johnson</td>
+                    <td>Coach Wilson</td>
+                    <td>2023-08-16</td>
+                    <td><span class="status-badge">Completed</span></td>
+                </tr>
+                <tr>
+                    <td>Mike Peters</td>
+                    <td>Dr. Anderson</td>
+                    <td>2023-08-17</td>
+                    <td><span class="status-badge">Canceled</span></td>
+                </tr>
+            </table>
+        </div>
+
+
+/////// patient page ////
+
+
+@extends('layouts.app')
+
+@section('content')
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="dashboard-header glass-card">
+            <h1 class="display-4 mb-3">Patients List</h1>
+            <button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#addCoachModal">
+                <i class="fas fa-plus me-2"></i>Add New Patient
+            </button>
+        </div>
+
+        <form action="{{ route('patient.index') }}" method="GET" class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by Patient" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <select name="gender" class="form-select">
+                        <option value="">All Gender</option>
+                        <option value="M" {{ request('gender')=='Male' ? 'selected' : '' }}>Male</option>
+                        <option value="F" {{ request('gender')=='Female' ? 'selected' : '' }}>Female</option>
+                       
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Patients Table -->
+        <div class="glass-card p-4 mb-4">
+            <table class="table table-hover align-middle">
+                <thead class="thead-light">
+                    <tr>
+                        <th><i class="fas fa-id-badge text-center"></i> ID</th>
+                        <th><i class="fas fa-user text-center"></i> Patient</th>
+                        <th><i class="fas fa-phone text-center"></i> Phone</th>
+                        <th><i class="fas fa-number text-center"></i> Age</th>
+                        <th><i class="fas fa-venus-mars"></i>  Gender </th>
+                        <th><i class="fas fa-cogs text-center"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($patients as $Patient)
+                    <tr class="coach-card">
+                        <td>{{ $Patient->id }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="symbol symbol-40 me-3">
+                                    <img src="https://i.pravatar.cc/150" 
+                                         class="rounded-circle" 
+                                         width="40" 
+                                         alt="Coach Avatar">
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ $Patient->full_name }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                             {{ $Patient->phone}}
+                        </td>
+                        <td>
+                            {{ $Patient->age}}
+                        </td>
+                        <td>
+                            @if ($Patient->gender =='M')
+                            Male <i class="bi bi-gender-male"></i>
+                            @else
+                            Female <i class="bi bi-gender-female"></i>
+                            @endif
+                       </td>
+
+                        <td>
+                            <a href="{{ route('patient.show', $Patient->id) }}" 
+                               class="btn btn-sm action-btn btn-outline me-2">
+                               <i class="fas fa-eye"></i>
+                            </a>
+                            <form action="{{ route('patient.destroy', $Patient->id) }}" 
+                                  method="POST" 
+                                  class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="btn btn-sm action-btn btn-outline-danger">
+                                   <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Enhanced Add Patient Modal -->
+    <div class="modal fade" id="addCoachModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content glass-card">
+                <div class="modal-header border-0">
+                    <h3 class="modal-title">🌟 New Patient Profile</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('patient.store') }}" onsubmit="return PatientUpdatePlanning()" method="POST" class="row g-4">
+                        @csrf
+                        <!-- Left Column -->
+                        <div class="row">
+                            <!-- Full Name and Phone Number -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control bg-transparent text-white" 
+                                        id="fullName" name="full_name" required>
+                                    <label for="fullName"><i class="fas fa-user me-2"></i>Full Name</label>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <input type="number" class="form-control bg-transparent text-white mt-2" 
+                                        id="tel" name="phone_number" required>
+                                    <label for="tel"><i class="fas fa-phone me-2"></i>Phone Number</label>
+                                </div>
+                            </div>
+
+                            <!-- Age and Gender -->
+                            <div class="col-md-6">
+                                <div class="card bg-transparent mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-white"><i class="fas fa-dumbbell me-2"></i>Age</h5>
+                                        <input type="number" min="1" max="100" name="age" class="w-100"/>
+                                    </div>
+                                </div>
+
+                                <div class="card bg-transparent">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-white"><i class="fas fa-calendar-check me-2"></i>Gender</h5>
+                                        <select class="form-select bg-transparent text-white" name="gender">
+                                            <option value="M" class="text-black">male</option>
+                                            <option value="F" class="text-black">female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedule Section -->
+                        <div class="col-12">
+                            <div class="card bg-transparent">
+                                <div class="card-body">
+                                    <h5 class="card-title text-white"><i class="fas fa-clock me-2"></i>Priorities</h5>
+                                    <div class="row g-3" id="dayTimingsContainer">
+                                        <!-- Priority 1 -->
+                                        <div class="col-md-4">
+                                            <h4 class="text-white">Priority 1</h4>
+                                            <div class="timing-card">
+
+                                                <input type="date" name="priority_1_day" id="priority_1_day" class="form-select bg-transparent text-white">
+                                                <div class="row g-2 mt-2">
+                                                    <div class="col-6">
+                                                        <input type="time" class="form-control bg-transparent text-white" name='priority_1_start_time' id="priority_1_start_time" placeholder="Start Time">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input type="time" class="form-control bg-transparent text-white" name='priority_1_end_time' id="priority_1_end_time" placeholder="End Time">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Priority 2 -->
+                                        <div class="col-md-4">
+                                            <h4 class="text-white">Priority 2</h4>
+                                            <div class="timing-card">
+                                              
+                                                <input type="date" name="priority_2_day" id="priority_2_day" class="form-select bg-transparent text-white">
+                                                <div class="row g-2 mt-2">
+                                                    <div class="col-6">
+                                                        <input type="time" class="form-control bg-transparent text-white" name='priority_2_start_time' id="priority_2_start_time" placeholder="Start Time">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input type="time" class="form-control bg-transparent text-white" name='priority_2_end_time' id="priority_2_end_time" placeholder="End Time">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Priority 3 -->
+                                        <div class="col-md-4">
+                                            <h4 class="text-white">Priority 3</h4>
+                                            <div class="timing-card">
+                                           
+                                                <input type="date" name="priority_3_day" id="priority_3_day"class="form-select bg-transparent text-white" >
+                                                <div class="row g-2 mt-2">
+                                                    <div class="col-6">
+                                                        <input type="time" class="form-control bg-transparent text-white" name='priority_3_start_time' id="priority_3_start_time" placeholder="Start Time">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input type="time" class="form-control bg-transparent text-white" name='priority_3_end_time' id="priority_3_end_time" placeholder="End Time">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+        
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 text-center mt-4">
+                            <input type="hidden" id="planning" name="Priorities">
+                            <button type="submit" class="btn btn-light btn-lg px-5">
+                                <i class="fas fa-save me-2"></i>Add Patient
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+  function PatientUpdatePlanning() {
+    // Collect data for Priority 1
+    const priority1Day = document.getElementById('priority_1_day').value.trim();
+    const priority1StartTime = document.getElementById('priority_1_start_time').value.trim();
+    const priority1EndTime = document.getElementById('priority_1_end_time').value.trim();
+    // Collect data for Priority 2
+    const priority2Day = document.getElementById('priority_2_day').value.trim();
+    const priority2StartTime = document.getElementById('priority_2_start_time').value.trim();
+    const priority2EndTime = document.getElementById('priority_2_end_time').value.trim();
+    // Collect data for Priority 3
+    const priority3Day = document.getElementById('priority_3_day').value.trim();
+    const priority3StartTime = document.getElementById('priority_3_start_time').value.trim();
+    const priority3EndTime = document.getElementById('priority_3_end_time').value.trim();
+
+    // Initialize an empty planning object
+    let planning = {};
+
+    // Helper function to add valid priority to planning
+    function addPriority(priority, day, startTime, endTime) {
+        if (day && startTime && endTime) {
+            planning[priority] = {
+                [day]: {
+                    startTime: startTime,
+                    endTime: endTime
+                }
+            };
+        }
+    }
+
+    // Validate: Priority 1 is mandatory
+    if (!priority1Day || !priority1StartTime || !priority1EndTime) {
+        alert("Please fill out Priority 1 as it's required.");
+        return false; // Prevent form submission
+    }
+
+    // Add only filled priorities
+    addPriority("priority 1", priority1Day, priority1StartTime, priority1EndTime);
+    addPriority("priority 2", priority2Day, priority2StartTime, priority2EndTime);
+    addPriority("priority 3", priority3Day, priority3StartTime, priority3EndTime);
+
+    // Convert planning object to JSON
+    const planningJSON = JSON.stringify(planning);
+
+    // Set the JSON data in the hidden input field
+    document.getElementById('planning').value = planningJSON;
+
+    // Log the JSON for debugging
+    console.log("Generated Planning JSON:", planningJSON);
+
+    // Allow form submission
+    return true;
+}
+</script>
+
+@endsection
+
+/////  patient profile ////
+
+
+@extends('layouts.app')
+@section('content')
+
+
+    <div class="patient-profile">
+        <!-- Header Section -->
+        <div class="profile-header">
+            <img src="patient-avatar.jpg" alt="Patient" class="patient-avatar">
+            <div class="header-info">
+                <h1 class="patient-name">{{ $patient->full_name }}</h1>
+                <div class="patient-meta">
+                    <span><i class="fas fa-birthday-cake"></i> {{ $patient->age }} years</span>
+                    <span>
+                        @if ($patient->gender == "M")
+                            Male <i class="bi bi-gender-male"></i>
+                        @elseif ($patient->gender == "F")
+                            Female <i class="bi bi-gender-female"></i>
+                        @endif
+                    </span>
+                    <span><i class="fas fa-file-medical"></i> ID: {{ $patient->id }}</span>
+                    <input type="hidden" name="patient_id" id="patient_id" value="{{ $patient->id }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6  p-4">
+            <div id="calendar" class="p-4"></div>
+        </div>
+
+        <!-- Coach Availability Section -->
+        <div class="availability-section p-6 mb-8 mt-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="filter-card">
+                    <label class="filter-label text-white">
+                        <i class="fas fa-dumbbell mr-2 text-white"></i>Select Specialty
+                    </label>
+                    <select class="glass-select text-white" id="specialtySelect">
+                        <option value="" class="text-black">All Specialties</option>
+                        @foreach($specialities as $specialty)
+                            <option value="{{ $specialty->name }}" class="text-black">{{ $specialty ->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button class="availability-btn" id="checkAvailability" onclick="checkAvailableCoaches()">
+                        <i class="fas fa-search mr-2"></i>Check Available Coaches
+                    </button>
+                </div>
+            </div>
+        <div id="availableCoaches"></div>
+
+        </div>
+
+    
+    </div>
+
+    
+    <style>
+    
+
+        .filter-card {
+            margin-bottom: 0.5rem; 
+        }
+
+        .filter-label {
+            font-size: 0.875rem; 
+            font-weight: 600; 
+        }
+
+        .glass-select {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: white;
+            background-image: url("data:image/svg+xml,%3csvg...");
+        }
+
+        .availability-btn {
+                    width: 100%;
+                    background-color: #4f46e5; /* bg-indigo-600 */
+                    color: white;
+                    padding: 0.75rem 1.5rem; /* px-6 py-3 */
+                    border-radius: 0.5rem; /* rounded-lg */
+                    transition: all 0.3s;
+                    cursor: pointer;
+            }
+            
+            .availability-btn:hover {
+                    background-color: #4338ca; /* hover:bg-indigo-700 */
+                    transform: translateY(-2px); /* hover:translate-y-[-2px] */
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* hover:shadow-lg */
+        }
+
+        #coachesResults {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 1rem; /* Adjust gap as needed */
+        }
+
+        @media (min-width: 768px) {
+            #coachesResults {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        .coach-card {
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    background-color: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    transition: background-color 0.3s;
+            }
+        .coach-card:hover {
+                    background-color: rgba(255, 255, 255, 0.1);
+        }
+    /* callendar style */
+
+   
+    
+    /* Calendar Container */
+        #calendar {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Event Styling with Status Colors */
+        .fc-event {
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 8px 12px !important;
+            margin: 4px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16) !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fc-event::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        /* Pending - Amber */
+        .fc-event.priority1 {
+            background: rgba(255, 167, 38, 0.15) !important;
+            color:rgb(255, 38, 38) !important;
+        }
+        .fc-event.priority1::before {
+            background:rgb(255, 38, 38);
+        }
+
+        /* Passed - Emerald */
+        .fc-event.priority2 {
+            background: rgba(102, 187, 106, 0.15) !important;
+            color:rgb(231, 140, 2) !important;
+        }
+        .fc-event.priority2::before {
+            background: rgb(231, 140, 2);
+        }
+
+        /* Canceled - Rose */
+        .fc-event.priority3 {
+            background: rgba(239, 83, 80, 0.15) !important;
+            color:rgb(16, 236, 0) !important;
+        }
+        .fc-event.priority3::before {
+            background: rgb(16, 236, 0) ;
+        }
+
+        /* Hover Effects */
+        .fc-event:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25) !important;
+        }
+
+        /* Time Styling */
+        .fc-event-time {
+            font-weight: 300;
+            opacity: 0.8;
+            margin-right: 8px;
+        }
+
+        /* Today Highlight */
+        .fc-day-today {
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+
+        /* Header Styling */
+        .fc-toolbar {
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        
+        /* Button Styling */
+        .fc-button {
+            background: rgba(255,255,255,0.1) !important;
+            border: none !important;
+            border-radius: 8px !important;
+            color: white !important;
+            margin-left: 10px;
+            transition: all 0.3s ease !important;
+        }
+
+        .fc-button:hover {
+            background: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+
+   
+   </style>
+
+    <script>
+
+    function checkAvailableCoaches() {
+        // ... [keep existing code until .then(result => { ... })]
+            const patientId = document.getElementById('patient_id').value;
+            const speciality = document.getElementById('specialtySelect').value;
+                                
+            if (!speciality) {
+                    alert('Please select a speciality first');
+                    return;
+                }
+
+                // this.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Searching...`;
+
+                // Create the payload
+                const data = {
+                    patient_id: patientId,
+                    speciality: speciality
+                };
+
+                // Send the POST request to the route
+                fetch("{{ route('coach-availability') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+
+                .then(result => {
+                const container = document.getElementById("availableCoaches");
+                container.innerHTML = ""; // Clear previous results
+
+                    if (result.success) {
+                        console.log(result);
+                        
+                        // Create section heading
+                        const heading = document.createElement("h3");
+                        heading.className = "text-white text-xl font-bold mb-4";
+                        heading.innerHTML = `<i class="fas fa-users mr-2"></i>Available Coaches (${result.priorityUsed})`;
+                        container.appendChild(heading);
+
+                        // Create coaches grid
+                        const grid = document.createElement("div");
+                        grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+                        
+                        result.available_coaches.forEach(coach => {
+                            // const  coach = item.coach;
+                            // const freeinterval = item.free_interval;          
+                            const card = document.createElement("div");
+                            card.className = "glass-card p-4 rounded-xl hover:transform hover:scale-105 transition-all";
+                            card.innerHTML = `
+                                <div class="flex items-center gap-4 mb-4">
+                                    <img src="${'https://i.pravatar.cc/150?u=' + coach.id}" 
+                                        class="w-12 h-12 rounded-full border-2 border-white/20">
+                                    <div>
+                                        <h4 class="text-white font-semibold">${coach.full_name}</h4>
+                                        <p class="text-indigo-200 text-sm">${coach.speciality}</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <a href="/user/${coach.id}" 
+                                    class="patient-card-action-btn bg-indigo-600 hover:bg-indigo-700">
+                                    <i class="fas fa-info-circle mr-2"></i>Details
+                                    </a>
+                                    <button class="patient-card-action-btn bg-emerald-600 hover:bg-emerald-700 book-btn"
+                                            data-coach-id="${coach.id}"
+                                            data-patient-id="${patientId}">
+                                        <i class="fas fa-calendar-check mr-2"></i>Book
+                                    </button>
+                                </div>
+                            `;
+                            grid.appendChild(card);
+                        });
+
+                        container.appendChild(grid);
+                        
+                        // Add event listeners for book buttons
+                        document.querySelectorAll('.book-btn').forEach(button => {
+                            button.addEventListener('click', function() {
+                                const coachId = this.dataset.coachId;
+                                const patientId = this.dataset.patientId;
+                                // Handle booking logic here
+                                initiateBooking(coachId, patientId);
+                            });
+                        });
+                        
+                    }
+                    else {
+                        container.innerHTML = `
+                            <div class="glass-card p-4 text-center text-white/70">
+                                <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                                ${result.message}
+                            </div>
+                        `;
+                    }
+            })
+        // ... [keep existing error handling]
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var events = <?php
+            $allEvents = [];
+                $p_priority = json_decode($patient->priorities, true);
+                foreach ($p_priority as $priority => $date) {
+                    // dd($priority);
+                    $statusClass = '';
+                    switch ($priority) {
+                        case 'priority 1':
+                            $statusClass = 'priority1';
+                            break;
+                        case 'priority 2':
+                            $statusClass = 'priority2';
+                            break;
+                        case 'priority 3':
+                            $statusClass = 'priority3';
+                            break;
+                    }
+                    foreach ($date as $time) {
+                        $day=  key($date);
+                        $startTime = $time['startTime'].":00";
+                        $endTime = $time['endTime'].":00";
+                        $allEvents[] = [
+                            'title' => $priority,
+                            'date'=>   $day,
+                            'start' => $day .'T'.$startTime,
+                            'end' =>  $day .'T'.$endTime,
+                            'className' => $statusClass,
+                            'extendedProps' => [
+                                'priority' => '{{ $priority}}'
+                            ]
+                            
+                            ];
+                            // dd($allEvents);
+                    }
+                }
+                echo json_encode($allEvents);
+        ?>;
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: events,
+            eventContent: function(arg) {
+                return {
+                    html: `<div class="fc-event-inner">
+                            <span class="fc-event-time">${arg.timeText}</span>
+                            <span class="fc-event-title">${arg.event.title}</span>
+                        </div>`
+                };
+            },
+            eventDidMount: function(arg) {
+                // Add hover effect
+                arg.el.addEventListener('mouseenter', function() {
+                    arg.el.style.zIndex = '999';
+                });
+                arg.el.addEventListener('mouseleave', function() {
+                    arg.el.style.zIndex = 'auto';
+                });
+            },
+    
+        });
+
+        calendar.render();
+    });
+    </script>
+
+    <!-- Optionally include Bootstrap JS bundle if needed -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////  coach  /////
+
+
+@extends('layouts.app')
+
+@section('content')
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="dashboard-header glass-card">
+            <h1 class="display-4 mb-3">Coach List</h1>
+            <button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#addCoachModal">
+                <i class="fas fa-plus me-2"></i>Add New Coach
+            </button>
+        </div>
+
+        <!-- Coaches Table -->
+        <div class="glass-card p-4 mb-4">
+            <table class="table table-hover align-middle">
+                <thead class="thead-light">
+                    <tr>
+                        <th><i class="fas fa-id-badge text-center"></i> ID</th>
+                        <th><i class="fas fa-user text-center"></i> Coach</th>
+                        <th><i class="fas fa-star text-center"></i> Specialty</th>
+                        <th><i class="fas fa-clock text-center"></i> Availability</th>
+                        <th><i class="fas fa-shield-alt text-center"></i> Permission Allowness</th>
+                        <th><i class="fas fa-cogs text-center"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($users as $user)
+                    <tr class="coach-card">
+                        <td>{{ $user->id }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="symbol symbol-40 me-3">
+                                    <img src="https://i.pravatar.cc/150" 
+                                         class="rounded-circle" 
+                                         width="40" 
+                                         alt="Coach Avatar">
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ $user->full_name }}</div>
+                                    <div class="text-muted small">{{ $user->email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary">{{ $user->speciality }}</span>
+                        </td>
+                        <td>
+                            <span class="status-badge {{ $user->is_available ? 'available' : 'unavailable' }}">
+                                {{ $user->is_available ? 'Available' : 'Busy' }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge {{ $user->is_admin ? 'bg-warning' : 'bg-success' }}">
+                                {{ $user->is_admin ? 'Allow' : 'Not Allow' }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ route('user.show', $user->id) }}" 
+                               class="btn btn-sm  btn-outline-secondary me-2">
+                               <i class="fas fa-eye"></i>
+                            </a>
+                            <form action="{{ route('user.destroy', $user->id) }}" 
+                                  method="POST" 
+                                  class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="btn btn-sm  btn-outline-danger me-2">
+                                   <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Enhanced Add Coach Modal -->
+    <div class="modal fade" id="addCoachModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content glass-card">
+                <div class="modal-header border-0">
+                    <h3 class="modal-title">🌟 New Coach Profile</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('user.store') }}" onsubmit="coachUpdatePlanning()" method="POST" class="row g-4">
+                        @csrf
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control bg-transparent text-white" 
+                                    id="fullName" name="full_name" required>
+                                <label for="fullName"><i class="fas fa-user me-2"></i>Full Name</label>
+                            </div>
+
+                            <div class="form-floating">
+                                <input type="number" class="form-control bg-transparent text-white mt-2" 
+                                    id="tel" name="tel" required>
+                                <label for="tel"><i class="fas fa-phone me-2"></i>Phone Number</label>
+                            </div>
+
+                            <div class="form-floating mt-3">
+                                <input type="email" class="form-control bg-transparent text-white" 
+                                    id="email" name="email" required>
+                                <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                            </div>
+
+                            <div class="form-floating mt-3">
+                                <input type="password" class="form-control bg-transparent text-white" 
+                                    id="password" name="password" required>
+                                <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <div class="card bg-transparent mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title text-white"><i class="fas fa-dumbbell me-2"></i>Specialization</h5>
+                                    <select class="form-select bg-transparent text-white" id="specialist" name="specialist" required>
+                                        <option value="">Select Specialization</option>
+                                        @foreach ($specialities as $speciality )
+                                            <option value="{{$speciality->name}}" class="text-black">{{$speciality->name}}</option>
+                                        @endforeach
+                                    </select> 
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="card bg-transparent">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-white"><i class="fas fa-calendar-check me-2"></i>Availability</h5>
+                                            <select class="form-select bg-transparent text-white" name="is_available">
+                                                <option value="1" class="text-black">Available</option>
+                                                <option value="0" class="text-black">Unavailable</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Role selection is commented out -->
+                            </div>
+                        </div>
+
+                        <!-- Schedule Section -->
+                        <div class="col-12">
+                            <div class="card bg-transparent">
+                                <div class="card-body">
+                                    <h5 class="card-title text-white"><i class="fas fa-clock me-2"></i>Schedule</h5>
+                                    <div class="row g-3" id="dayTimingsContainer">
+                                        <!-- Dynamic timing cards will be added here -->
+                                    </div>
+                                    <div class="mt-3">
+                                        <!-- Replacing the day select with a date input -->
+                                        <input type="date" class="form-control bg-transparent text-white" 
+                                            id="datePicker" onchange="coachToggleDayTime(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 text-center mt-4">
+                            <input type="hidden" id="planning" name="planning">
+                            <button type="submit" class="btn btn-light btn-lg px-5">
+                                <i class="fas fa-save me-2"></i>Create Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // Helper function: Convert "YYYY-MM-DD" to "D/M/YYYY"
+    function formatDate(dateString) {
+        const parts = dateString.split('-'); // [YYYY, MM, DD]
+        const year = parts[0];
+        const month = parseInt(parts[1], 10); // Removes any leading zeros
+        const day = parseInt(parts[2], 10);
+        return day + '/' + month + '/' + year;
+    }
+
+    function coachToggleDayTime(dateValue) {
+        if (!dateValue) return;
+        const container = document.getElementById('dayTimingsContainer');
+        if (!document.getElementById(dateValue + '-time')) {
+            const card = document.createElement('div');
+            card.className = 'col-md-6';
+            card.innerHTML = `
+                <div class="timing-card" id="${dateValue}-time">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 text-white">${dateValue}</h6>
+                        <button type="button" class="btn btn-link text-danger" 
+                                onclick="coachRemoveDay('${dateValue}')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="row g-2 mt-2">
+                        <div class="col-6">
+                            <input type="time" class="form-control bg-transparent text-white" name='start_time' placeholder="Start Time">
+                        </div>
+                        <div class="col-6">
+                            <input type="time" class="form-control bg-transparent text-white" name='end_time' placeholder="End Time">
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+    }
+
+    function coachRemoveDay(dateValue) {
+        
+        const section = document.getElementById(dateValue + '-time');
+        if (section) {
+            section.parentElement.remove();
+        }
+        coachUpdatePlanning();
+    }
+
+    function coachUpdatePlanning() {
+        let schedule = {};
+        const dayTimings = document.querySelectorAll('.timing-card');
+        dayTimings.forEach((card) => {
+            const dateValue = card.id.replace('-time', '');
+            const inputs = card.querySelectorAll('input');
+            if(inputs[0].value && inputs[1].value) {
+            schedule[dateValue] = {
+                startTime: inputs[0].value,
+                endTime: inputs[1].value
+            };
+        }
+        });
+        document.getElementById('planning').value = JSON.stringify(schedule);
+    }
+</script>
+@endsection
+
+
+///// coach profile //////
+
+ 
+    @extends('layouts.app')
+    @section('content')
+    <div class="coach-profile glass-card">
+        <!-- Coach Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-8 border-b border-white/10">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <img src="https://i.pravatar.cc/150" alt="Coach" class="coach-avatar">
+                <div class="space-y-2">
+                    <h1 class="text-3xl font-bold">{{$coach->full_name}}</h1>
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-full bg-white/10 text-sm">{{$coach->speciality}} Coach</span>
+                        <span class="px-3 py-1 rounded-full {{$coach->is_available ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}}">
+                            {{$coach->is_available == 1 ? 'Available' :'Busy'}}
+                        </span>
+                    </div>
+                    <div class="space-y-1 text-white/80">
+                        <p><i class="fas fa-envelope mr-2"></i>{{$coach->email}}</p>
+                        <p><i class="fas fa-phone mr-2"></i>{{$coach->tel}}</p>
+                    </div>
+                </div>
+            </div>
+                <button class="action-btn px-6 py-2" data-bs-toggle="modal" data-bs-target="#addCoachModal">
+                    <i class="fas fa-edit mr-2"></i>Edit Profile
+                </button>
+        </div>
+
+    
+        <div class="mt-6  p-4">
+            <div id="calendar" class="p-4"></div>
+        </div>
+        
+
+
+        <!-- Table Switcher -->
+        <div class="table-switcher flex gap-2 my-8">
+            <button class="action-btn px-6 py-2"id='appointments_id' onclick="showTable('appointments')">
+                <i class="fas fa-calendar-check mr-2"></i>Appointments
+            </button>
+            <button class="action-btn px-6 py-2" id='patients_id' onclick="showTable('patients')">
+                <i class="fas fa-users mr-2"></i>Patients
+            </button>
+        </div>
+        <!-- Appointments Table -->
+        <div id="appointments">
+            <div class="overflow-x-auto rounded-lg">
+                <table class="w-full">
+                    <thead class="bg-white/10">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Patient</th>
+                            <th class="px-6 py-4 text-left">Date & Time</th>
+                            <th class="px-6 py-4 text-left">Status</th>
+                            <th class="px-6 py-4 text-left">Report</th>
+                            <th class="px-6 py-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/10">
+                        @foreach ($coachAppointments as $appointment)
+                
+                        <tr>
+                            <td class="px-6 py-4">{{ $appointment->client_full_name}}</td>
+                            @php
+                            $appointmentDate = json_decode( $appointment->appointment_planning, true);
+                            @endphp
+                            <td class="px-6 py-4">
+                                @if (is_array($appointmentDate))
+                                    @foreach ($appointmentDate as $date => $time )
+                                        <span> {{ $date }} -  </span>
+                                        @foreach ($time as $slot)
+                                            <span> {{ $slot }}  </span>
+                                        @endforeach
+                                    @endforeach
+                                @endif
+                            </td>
+
+                            @php
+                                $color = ''; // Default color
+
+                                if ($appointment->status == 'pending') {
+                                    $color = 'badge bg-yellow-500';
+                                } elseif ($appointment->status == 'passed') {
+                                    $color = 'badge bg-success';
+                                } elseif ($appointment->status == 'cancel') {
+                                    $color = 'badge bg-danger';
+                                }
+                            @endphp
+                            <td class="px-6 py-4"><span class="status-badge text-white {{ $color }}">{{ $appointment->status }}</span></td>
+                            @if ($appointment->report_path)
+                                <td class="px-6 py-4"> 
+                                <a href="{{ route("appointments.viewReport", $appointment->id) }}" target="_blank" class="action btn py-2">
+                                    <i class="fas fa-file-alt mr-2 btn download-btn"></i>
+                                </a>
+                                <a href="{{ route("appointments.downloadReport", $appointment->id) }}" class="action btn  py-2">
+                                    <i class="fas  fa-cloud-download-alt mr-2 btn download-btn"></i>
+                                </a>
+                                </td>
+                                @else
+                                <td class="px-6 py-4">No Report</td>
+                            @endif
+                            <td class="px-6 py-4 ">
+                                <form action="{{ route('appointment.show',$appointment->id) }}" method="get">
+                                    @csrf
+                                    <button class="action-btn px-4 py-2">
+                                    <i class="fas fa-eye mr-2"></i>Details
+                                </button>
+                                </form> 
+                            </td>
+                        </tr>
+                        @endforeach
+                      
+                        <!-- Add more rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Patients Table -->
+        <div id="patients" style="display: none;">
+            <div class="overflow-x-auto rounded-lg">
+                <table class="w-full">
+                    <thead class="bg-white/10">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Patient</th>
+                            <th class="px-6 py-4 text-left">Contact</th>
+                            <th class="px-6 py-4 text-left">Status</th>
+                            <th class="px-6 py-4 text-left">Report</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/10">
+                        @foreach ($coachAppointments as $appointment)
+                        <tr>
+                            <td class="px-6 py-4">{{ $appointment->client_full_name }}</td>
+                            <td class="px-6 py-4">{{ $appointment->client_tel }}</td>
+                             
+                            @php
+                                $color = ''; 
+
+                                if ($appointment->status == 'pending') {
+                                    $color = 'badge bg-yellow-500';
+                                } elseif ($appointment->status == 'passed') {
+                                    $color = 'badge bg-success';
+                                } elseif ($appointment->status == 'cancel') {
+                                    $color = 'badge bg-danger';
+                                }
+                            @endphp
+                            <td class="px-6 py-4"><span class="status-badge text-white {{ $color }}">{{ $appointment->status }}</span></td>
+                            @if ($appointment->report_path)
+                                <td class="px-6 py-4"> 
+                                    <a href="{{ route("appointments.viewReport", $appointment->id) }}" target="_blank" class="action btn  py-2">
+                                    <i class="fas fa-file-alt mr-2 btn download-btn"></i>
+                                </a>
+                                <a href="{{ route("appointments.downloadReport", $appointment->id) }}" class="action btn  py-2">
+                                    <i class="fas  fa-cloud-download-alt mr-2 btn download-btn"></i>
+                                </a>
+                                </td>
+                                @else
+                                <td class="px-6 py-4">No Report</td>
+                            @endif
+                            
+
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table> 
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Add Coach Modal -->
+    <div class="modal fade" id="addCoachModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content glass-card">
+                <div class="modal-header border-0">
+                    <h3 class="modal-title">🌟 Update Coach Profile</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('user.update', $coach->id) }}" onsubmit="coachUpdatePlanning()" method="POST" class="row g-4">
+                        @csrf
+                        @method('put')
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control bg-transparent text-white" 
+                                    id="fullName" name="full_name" value="{{$coach->full_name}}" required>
+                                <label for="fullName"><i class="fas fa-user me-2"></i>Full Name</label>
+                            </div>
+
+                            <div class="form-floating">
+                                <input type="number" class="form-control bg-transparent text-white mt-2" 
+                                    id="tel" name="tel" 
+                                    value="{{$coach->tel}}" required>
+                                <label for="tel"><i class="fas fa-phone me-2"></i>Phone Number</label>
+                            </div>
+
+                            <div class="form-floating mt-3">
+                                <input type="email" class="form-control bg-transparent text-white" 
+                                    id="email" name="email" value="{{$coach->email}}" required>
+                                <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                            </div>
+
+                            <div class="form-floating mt-3">
+                                <input type="password" class="form-control bg-transparent text-white" 
+                                    id="password" name="password" value="{{$coach->password}}" required>
+                                <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <div class="card bg-transparent mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title text-white"><i class="fas fa-dumbbell me-2"></i>Specialization</h5>
+                                    <select class="form-select bg-transparent text-white" id="specialist" name="specialist" required>
+                                        <option value="">Select Specialization</option>
+                                        @foreach ($specialities as $speciality )
+                                            <option value="{{$speciality}}"  class="text-black" {{$coach->speciality == $speciality ?'selected': ''}}>{{$speciality}}</option>
+                                        @endforeach
+                                    </select> 
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="card bg-transparent">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-white"><i class="fas fa-calendar-check me-2"></i>Availability</h5>
+                                            <select class="form-select bg-transparent text-white" name="is_available">
+                                                <option value="1" class="text-black" {{$coach->is_available == 1 ?'selected':''}}>Available</option>
+                                                <option value="0" class="text-black" {{$coach->is_available == 0 ?'selected':''}} >Unavailable</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    
+
+                        <div class="col-12 text-center mt-4">
+                            <input type="hidden" id="planning" name="planning">
+                            <button type="submit" class="btn btn-light btn-lg px-5">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+<style>
+    /* Calendar Container */
+    #calendar {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        overflow: hidden;
+        padding: 20px;
+    }
+
+    /* Event Styling with Status Colors */
+    .fc-event {
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 8px 12px !important;
+        margin: 4px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fc-event::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+    }
+
+    /* Pending - Amber */
+    .fc-event.pending {
+        background: rgba(255, 167, 38, 0.15) !important;
+        color: #FFA726 !important;
+    }
+    .fc-event.pending::before {
+        background: #FFA726;
+    }
+
+    /* Passed - Emerald */
+    .fc-event.passed {
+        background: rgba(102, 187, 106, 0.15) !important;
+        color: #66BB6A !important;
+    }
+    .fc-event.passed::before {
+        background: #66BB6A;
+    }
+
+    /* Canceled - Rose */
+    .fc-event.cancel {
+        background: rgba(239, 83, 80, 0.15) !important;
+        color: #EF5350 !important;
+    }
+    .fc-event.cancel::before {
+        background: #EF5350;
+    }
+
+    /* Hover Effects */
+    .fc-event:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.25) !important;
+    }
+
+    /* Time Styling */
+    .fc-event-time {
+        font-weight: 300;
+        opacity: 0.8;
+        margin-right: 8px;
+    }
+
+    /* Today Highlight */
+    .fc-day-today {
+        background: rgba(255, 255, 255, 0.03) !important;
+    }
+
+    /* Header Styling */
+    .fc-toolbar {
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.5em;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Button Styling */
+    .fc-button {
+        background: rgba(255,255,255,0.1) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: white !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .fc-button:hover {
+        background: var(--primary-color) !important;
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var events = <?php
+        $allEvents = [];
+        foreach ($coachAppointments as $app) {
+            $statusClass = '';
+            switch ($app->status) {
+                case 'passed':
+                    $statusClass = 'passed';
+                    break;
+                case 'pending':
+                    $statusClass = 'pending';
+                    break;
+                case 'cancel':
+                    $statusClass = 'cancel';
+                    break;
+            }
+            $appointment_date = json_decode($app->appointment_planning, true);
+            foreach ($appointment_date as $date => $time) {
+                $startTime =  $time['startTime']."00";
+                $endTime =  $time['endTime']."00";
+                $allEvents[] = [
+                    'id'    => $app->id,
+                    'title' => $app->client_full_name,
+                    'start' => $date . 'T' . $startTime,
+                    'end'   => $date . 'T' . $endTime,
+                    'className' => $statusClass,
+                    'extendedProps' => [
+                        'status' => '{{ $app->status }}'
+                    ]
+                ];
+            }
+        }
+        echo json_encode($allEvents);
+    ?>;
+
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: events,
+        eventContent: function(arg) {
+            return {
+                html: `<div class="fc-event-inner">
+                        <span class="fc-event-time">${arg.timeText}</span>
+                        <span class="fc-event-title">${arg.event.title}</span>
+                      </div>`
+            };
+        },
+        eventDidMount: function(arg) {
+            // Add hover effect
+            arg.el.addEventListener('mouseenter', function() {
+                arg.el.style.zIndex = '999';
+            });
+            arg.el.addEventListener('mouseleave', function() {
+                arg.el.style.zIndex = 'auto';
+            });
+        },
+        eventClick: function(info) {
+            var detailUrl = "{{ route('appointment.show', ':id') }}";
+            detailUrl = detailUrl.replace(':id', info.event.id);
+            window.location.href = detailUrl;
+        }
+    });
+
+    calendar.render();
+});
+</script>
+    @endsection
+
+
+///// appointment details //////
+@extends('layouts.app')
+
+@section('content')
+<div>
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold text-white">
+                <i class="fas fa-calendar-star mr-4"></i>Appointment Details
+            </h1>
+        <form action="{{ Route('appointment.index')}}" method="get">
+        <button><i class="fas fa-arrow-left text-purple-300 "></i></button>
+        </form>
+               
+        </div>
+
+        <!-- Main Card -->
+        <div class="glass-card p-8 rounded-2xl mb-8">
+            <!-- Info Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Client Card -->
+                <div class="info-card bg-indigo-500/10">
+                    <i class="fas fa-user-astronaut text-3xl mb-4 text-indigo-300"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Client</h3>
+                    <p class="text-indigo-100 text-lg"><span><i class="fas fa-user ml-2"></i> : </span>{{ $appointment->client_full_name }}</p>
+                    <p class="text-indigo-100 text-lg"><span><i class="fas fa-phone ml-2"></i> : </span>{{ $appointment->client_tel }}</p>
+                </div>
+
+                <!-- Coach Card -->
+                <div class="info-card bg-purple-500/10">
+                    <i class="fas fa-rocket text-3xl mb-4 text-purple-300"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Coach</h3>
+                    @php
+                        $coachName = App\Models\User::find($appointment->coach_id);
+                    @endphp
+
+                    <p class="text-purple-100 text-lg mb-4"><span><i class="fas fa-user ml-2"></i> : </span>{{$coachName->full_name }}</p>
+                    <span class="badge-glass text-white mt-2">{{ $appointment->choosen_speciality }}</span>
+                </div>
+
+                <!-- Time Card -->
+                <div class="info-card bg-yellow-500/10 rounded-xl p-8">
+                    <i class="fas fa-clock text-3xl mb-4 text-pink-300"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Date & Time</h3>
+                    @php
+                    $schedule = json_decode($appointment-> appointment_planning, true);
+                    @endphp
+                    @foreach ($schedule as $day => $time)
+                    <span class="text-pink-100 text-lg">{{ $day }} :</span>
+                    @foreach ($time as $slot )
+                    <span class="text-pink-100 text-lg">{{ $slot }}</span>
+                    @endforeach
+                    @endforeach
+                    
+                </div>
+
+                <!-- Status Card -->
+                <div class="info-card">
+                    <!-- <div > -->
+                        <div class="d-flex justify-between mb-4">
+                            <i class="fas fa-hourglass-half text-xl "></i>
+                            <h3 class="text-xl font-semibold text-white">Status</h3>
+                            @php
+                                    $color = ''; // Default color
+
+                                    if ($appointment->status == 'pending') {
+                                        $color = ' bg-yellow-500';
+                                    } elseif ($appointment->status == 'passed') {
+                                        $color = 'bg-success';
+                                    } elseif ($appointment->status == 'cancel') {
+                                        $color = ' bg-danger';
+                                    }
+                            @endphp
+                            <p class=" badge  {{ $color }}">{{ ucfirst($appointment->status) }}</p>
+                        </div>
+                        
+                     
+                    <!-- </div>  -->
+
+                    @if ($appointment->status=='cancel')
+                    <div class="w-100 glass-card p-4">
+                        
+                        <div class="">
+                        <div class="d-flex w-100 justify-between">
+                            <h3 class="text-warning mb-2 text-lg">Cancelled By : <span class="text-white p-2 text-lg">{{ $appointment->cancelledBy }}</span></h3>
+                            <p ></p>
+                        </div>
+                        <div>
+                            <h2 class="text-warning mb-2 text-lg">description :</h2>
+                            <p class="text-white ">
+                                {{ $appointment->reason }}
+                            </p>
+                        </div>
+                        </div>
+                       
+                      
+
+                    </div>
+                    @endif
+                  
+                   
+                </div>
+                
+            </div>
+
+            <!-- Report Section -->
+            @if ($appointment->status != 'cancel')
+                <div class="report-section">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-file-waveform text-2xl mr-3 text-white"></i>
+                        <h3 class="text-xl font-semibold text-white">Session Report</h3>
+                    </div>
+
+                    @if($appointment->report_path)
+                        <div class="flex items-center justify-between glass-card-inner p-2 rounded-xl">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-pdf text-2xl mr-3 text-red-400"></i>
+                                <span class="text-white">{{ basename($appointment->report_path) }}</span>
+                            </div>
+                            <div  class="d-flex justify-between ">
+                            <form class="mr-2" action="{{ route('appointments.deleteReport', $appointment->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="delete-btn"> <i class="fas fa-trash-alt"></i></button>
+                            </form>
+                            <form class="mr-2" action="{{ route('appointments.downloadReport', $appointment->id) }}"method="GET">
+                                @csrf
+                                <button class="download-btn" > <i class="fas fa-cloud-download-alt "></i></button>
+                            </form>
+                            <a href="{{ route('appointments.viewReport', $appointment->id) }}" target="_blank" class="btn download-btn">
+                                <i class="fas fa-file-alt"></i>
+                            </a>
+                            </div>
+                        </div>
+                    @else
+                        <div class="glass-card-inner p-4 rounded-xl text-center">
+                    
+                            <form action="{{ route('appointments.uploadReport', $appointment->id) }}"
+                                method="POST" 
+                                enctype="multipart/form-data"
+                                class="flex flex-col items-center">
+                                @csrf
+                                <label class="upload-label">
+                                    <div>
+                                    <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
+                                    <span class="text-white">Upload Session Report</span>
+                                    </div>
+                                    
+                                    <input type="file" 
+                                        name="report" 
+                                        class="hidden"
+                                        accept=".pdf,.doc,.docx">
+                                </label>
+                                <button type="submit" class="upload-btn">
+                                    <i class="fas fa-upload mr-2"></i>Submit Report
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+            <div class="d-flex text-center">
+                <!-- <div  class=" editDltBtnContainer d-flex justify-between">
+                <form action="{{ route('appointment.edit' , $appointment->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-edit"></i></button>
+                </form>
+                </div> -->
+
+                @if ($appointment->status == 'pending')
+             
+                <div  class=" cancleCompleteBtnContainer d-flex justify-between">
+                        <form action="{{ route('appointment.edit',$appointment->id) }}">
+                            @csrf
+                            <button type="submit" class="btn btn-secondary "> Cancel Appointment</button>
+                        </form>
+
+                        <form action="{{ route('appointments.update-appointment-status' ,[$appointment->id,'passed']) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-success " >
+                             Completed Appointment
+                            </button>
+                        </form>
+                </div>
+
+                @endif
+        
+            </div>
+
+    
+
+    </div>
+</div>
+
+ <!-- Script to Handle Modal -->
+ <script>
+        function showCancelModal() {
+            document.getElementById('cancelModal').classList.remove('hidden');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('cancelModal');
+            if (event.target === modal) {
+                closeCancelModal();
+            }
+        }
+</script>
+@endsection

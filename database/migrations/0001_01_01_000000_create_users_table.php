@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->json('planning') ->nullable(false);
             $table->boolean('is_available') ->default(true);
             $table->string('speciality') ->nullable(false);
             $table->string('tel')->nullable(false);
